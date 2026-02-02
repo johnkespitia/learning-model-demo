@@ -1,0 +1,20 @@
+{
+    "student_id": "string",
+    "native_language": "es",
+    "target_language": "en",
+    "cefr_estimate": "A1|A2|B1|B2|C1",
+    "learning_preferences": {
+      "style": [],
+      "feedback": "string"
+    },
+    "skill_scores": {
+      "listening": 0,
+      "speaking": 0,
+      "reading": 0,
+      "writing": 0
+    },
+    "goals": [],
+    "common_error_patterns": [],
+    "affective_signals": {}
+  }
+  
