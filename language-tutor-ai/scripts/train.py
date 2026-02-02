@@ -48,7 +48,7 @@ def load_jsonl(path:str) -> List[Dict]:
 def to_hf_dataset(rows: List[Dict]) -> Dataset:
     prompts, completions = [], [] # = zip(rows, completions)
     for ex in rows:
-        promtp = build_prompt(ex["instruction"], ex["input"])
+        prompt = build_prompt(ex["instruction"], ex["input"])
         completion = ex["output"]
         prompts.append(prompt)
         completions.append(completion)
@@ -72,7 +72,7 @@ def create_lora_config(r: int, alpha: int, dropout: float, target_modules: List[
         target_modules = target_modules,
     )
 
-def guess_target_mocules(model_name: str) -> List[str]:
+def guess_target_modules(model_name: str) -> List[str]:
     return ["q_proj","k_proj","v_proj","o_proj","gate_proj","up_proj","down_proj"]
 
 def load_model_and_tokenizer(model_id: str, mode: str, dtype: str):
@@ -157,20 +157,30 @@ def train(config: TrainingConfig):
     bf16 = False
 
     args = TrainingArguments(
+        # output_dir=config.out_dir,
+        # num_train_epochs=config.epochs,
+        # per_device_train_batch_size=config.batch_size,
+        # per_device_eval_batch_size=1,
+        # gradient_accumulation_steps=config.grad_accum,
+        # learning_rate=config.lr,
+        # logging_steps=5,
+        # save_steps=50,
+        # evaluation_strategy="steps",
+        # eval_steps=50,
+        # save_total_limit=2,
+        # report_to="none",
+        # fp16=fp16,
+        # bf16=bf16,
         output_dir=config.out_dir,
         num_train_epochs=config.epochs,
         per_device_train_batch_size=config.batch_size,
-        per_device_eval_batch_size=1,
         gradient_accumulation_steps=config.grad_accum,
         learning_rate=config.lr,
-        logging_steps=5,
+        logging_steps=1,
         save_steps=50,
-        evaluation_strategy="steps",
-        eval_steps=50,
         save_total_limit=2,
         report_to="none",
-        fp16=fp16,
-        bf16=bf16,
+        optim="adamw_torch",
     )
 
     trainer = Trainer(
@@ -206,7 +216,7 @@ def main():
 
     args = p.parse_args()
 
-    cfg = TrainingConfig(
+    config = TrainingConfig(
         model_id=args.model_id,
         mode=args.mode,
         train_path=args.train_path,
@@ -222,7 +232,7 @@ def main():
         lora_alpha=args.lora_alpha,
         lora_dropout=args.lora_dropout,
     )
-    train(cfg)
+    train(config)
 
 if __name__ == "__main__":
     main()
